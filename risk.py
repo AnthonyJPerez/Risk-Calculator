@@ -40,6 +40,7 @@ def run_round(a, d):
 def run_risk(a, d, numRounds):
   count = 0;
   armiesLost = 0
+  defenderLoss = 0
   totalRounds = numRounds
   attackerArmies = a
   defenderArmies = d
@@ -49,7 +50,15 @@ def run_risk(a, d, numRounds):
     if win:
       count += 1
       armiesLost += attackerArmies - aArmies
-	  
-  print "Wins: ", (count*100)/totalRounds, "%, Armies lost: ", ((armiesLost*100)/max(attackerArmies*count,1)), "%"
-	
+    else:
+      defenderLoss += defenderArmies - dArmies
+
+  print ""
+  print "******** Attacker: ", a, " vs. Defender: ", d, " ********"  
+  print "Attacker Win Chance: %3.f%%" % ((count*100)/totalRounds)
+  print "Average Attacker loss: %3.f%%" % ((armiesLost*100)/max(attackerArmies*count,1))
+  print ""
+  print "Defender Win Chance: %3.f%%" % (100 - ((count*100)/totalRounds))
+  print "Average Defender loss: %3.f%%" % ((defenderLoss*100)/max(defenderArmies*count,1))
+  print ""	
 	
