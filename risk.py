@@ -1,5 +1,44 @@
 from random import *
 
+
+
+
+def compare(attackArmies, defendArmies, attackDice, defendDice):
+  attackArmies -= 0 if attackDice > defendDice else 1
+  defendArmies -= 1 if attackDice > defendDice else 0
+  return (attackArmies, defendArmies)
+
+
+
+
+def attack_custom(attackArmies, defendArmies, maxNumAttackDice=3, maxNumDefendDice=2, attackDiceMin=1, attackDiceMax=6, defendDiceMin=1, defendDiceMax=6):
+  aArr = []
+  dArr = []
+
+  # Give the players their dice:
+  # Each player gets either the max dice they can use, or dice 
+  # equal to the amount of armies they have to attack with, 
+  # whichever is smallest.
+  [aArr.append(randint(attackDiceMin, attackDiceMax)) for _ in range(min(attackArmies-1, maxNumAttackDice))]
+  [dArr.append(randint(defendDiceMin, defendDiceMax)) for _ in range(min(defendArmies, maxNumDefendDice))]
+
+  # Sort each player's dice
+  aArr.sort()
+  dArr.sort()
+
+  # Compare dice until one array is out of dice
+  try:
+    while True:
+      attackArmies, defendArmies = compare(attackArmies, defendArmies, aArr.pop(), dArr.pop())
+  except IndexError:
+    pass
+
+  # Return the updated armies
+  return (attackArmies, defendArmies)
+
+
+
+
 def attack(aArmies, dArmies):
   a = []
   d = []
@@ -11,10 +50,6 @@ def attack(aArmies, dArmies):
   # Sort each player's dice
   a.sort()
   d.sort()
-  
-  #print "Dice: "
-  #print a
-  #print d
   
   try:
     # Attack with dice until one array is empty, Max of two dice to check
@@ -29,13 +64,17 @@ def attack(aArmies, dArmies):
   return (aArmies, dArmies)	
 
   
+
+
 def run_round(a, d):
   aArmies = a
   dArmies = d
   while aArmies > 1 and dArmies > 0:
-    aArmies, dArmies = attack(aArmies, dArmies)
+    aArmies, dArmies = attack_custom(aArmies, dArmies)
   return (True if dArmies == 0 else False, aArmies, dArmies)
   
+
+
 	
 def run_risk(a, d, numRounds):
   count = 0;
