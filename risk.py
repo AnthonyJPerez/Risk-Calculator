@@ -1,5 +1,6 @@
 import random
 import itertools
+import functools
 from enum import Enum
 
 class RollResult(Enum):
@@ -96,9 +97,25 @@ def run_simulation(attackerArmies: int, attackUntil: int, defenderArmies: int, d
         # update simulation
         attackerArmies -= losses
         defenderArmies -= wins
-    print(f"attackerArmies: {attackerArmies}\ndefenderArmies: {defenderArmies}")
+    results = {
+        'win': attackerArmies > ruleset['minArmiesForAttack'] and attackerArmies > attackUntil,
+        'attackerArmies': attackerArmies,
+        'defenderArmies': defenderArmies
+    }
+    #print(f"win: {results['win']}, attackerArmies: {results['attackerArmies']}, defenderArmies: {results['defenderArmies']}")
+    return results
+
+
+def sumResults(results: dict, result: dict, numSimulations: float):
+    if result['win']:
+        results['avgWins'] += 1 / numSimulations
+    results['avgAttackerArmiesRemaining'] += result['attackerArmies'] / numSimulations
+    results['avgDefenderArmiesRemaining'] += result['defenderArmies'] / numSimulations
+    return results
+
 
 if __name__ == "__main__":
+    # Risk Ruleset
     ruleset = {}
     ruleset['attackerDice'] = 3
     ruleset['attackerDieSize'] = (1,6)
@@ -108,4 +125,26 @@ if __name__ == "__main__":
     ruleset['minArmiesForDefend'] = 0
     ruleset['tieBehavior'] = RollResult.Defender
 
-    run_simulation(30, 0, 30, 0, ruleset)
+    # Simulation parameters
+    numSimulations = 10000
+    attackerArmies = 30
+    attackUntil = 0
+    defenderArmies = 30
+    defendUntil = 0
+
+    # Run the simulation
+    initializer = {
+        'avgWins': 0.0,
+        'avgAttackerArmiesRemaining': 0.0,
+        'avgDefenderArmiesRemaining': 0.0
+    }
+    reduceResults = lambda results, result: sumResults(results, result, numSimulations)
+    results = functools.reduce(    \
+        reduceResults,    \
+        repeatfunc( \
+            run_simulation, \
+            numSimulations, \
+            attackerArmies, attackUntil, defenderArmies, defendUntil, ruleset), \
+        initializer)
+
+    print(results)
