@@ -14,6 +14,9 @@ class DieComparison(Enum):
     Lower = -1
 
 
+#
+# Courtesy of https://docs.python.org/3/library/itertools.html#itertools-recipes
+#
 def repeatfunc(func, times=None, *args):
     """Repeat calls to func with specified arguments.
 
