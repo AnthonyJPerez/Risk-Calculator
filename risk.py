@@ -108,7 +108,7 @@ def run_simulation(attackerArmies: int, attackUntil: int, defenderArmies: int, d
 
 def sumResults(results: dict, result: dict, numSimulations: float):
     if result['win']:
-        results['avgWins'] += 1 / numSimulations
+        results['avgWinsPercent'] += 100 / numSimulations
     results['avgAttackerArmiesRemaining'] += result['attackerArmies'] / numSimulations
     results['avgDefenderArmiesRemaining'] += result['defenderArmies'] / numSimulations
     return results
@@ -134,7 +134,7 @@ if __name__ == "__main__":
 
     # Run the simulation
     initializer = {
-        'avgWins': 0.0,
+        'avgWinsPercent': 0.0,
         'avgAttackerArmiesRemaining': 0.0,
         'avgDefenderArmiesRemaining': 0.0
     }
@@ -147,4 +147,5 @@ if __name__ == "__main__":
             attackerArmies, attackUntil, defenderArmies, defendUntil, ruleset), \
         initializer)
 
-    print(results)
+    print(f"average Wins: {results['avgWinsPercent']}%\naverage Attacker armies remaining: {results['avgAttackerArmiesRemaining']}\naverage Defender armies remaining: {results['avgDefenderArmiesRemaining']}")
+    
