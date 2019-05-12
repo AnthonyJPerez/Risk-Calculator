@@ -1,6 +1,3 @@
-import random
-import itertools
-import functools
 from enum import Enum
 
 
@@ -24,9 +21,10 @@ def repeatfunc(func, times=None, *args):
 
     Example:  repeatfunc(random.random)
     """
+    from itertools import starmap, repeat
     if times is None:
-        return itertools.starmap(func, itertools.repeat(args))
-    return itertools.starmap(func, itertools.repeat(args, times))
+        return starmap(func, repeat(args))
+    return starmap(func, repeat(args, times))
 
 
 #
@@ -57,8 +55,11 @@ def compareDice(dice):
 #       tieBehavior: RollResult     - Describes how to handle a tie on a die roll. 0 == defender wins, 1 == attacker wins, 2 == nobody wins
 #   }
 def run_simulation(attackerArmies: int, attackUntil: int, defenderArmies: int, defendUntil: int, ruleset: dict):
+    from random import randint
+    from itertools import tee
+
     # Roll the supplied die. Die has a min and max face value
-    roll = lambda dieType: random.randint(dieType[0], dieType[1])
+    roll = lambda dieType: randint(dieType[0], dieType[1])
 
     # Setup the function to compare dice. Comparison is from attacker's point of view.
     #
@@ -95,7 +96,7 @@ def run_simulation(attackerArmies: int, attackUntil: int, defenderArmies: int, d
                         reverse=True)))
 
         # Count the wins and losses
-        winRolls, lossRolls = itertools.tee(rolls)
+        winRolls, lossRolls = tee(rolls)
         wins = len(list(filter(lambda x: x == RollResult.Attacker, winRolls)))
         losses = len(list(filter(lambda x: x == RollResult.Defender, lossRolls)))
         
@@ -120,6 +121,7 @@ def sumResults(results: dict, result: dict, numSimulations: float):
 
 
 if __name__ == "__main__":
+    from functools import reduce
     # Risk Ruleset
     ruleset = {}
     ruleset['attackerDice'] = 3
@@ -144,7 +146,7 @@ if __name__ == "__main__":
         'avgDefenderArmiesRemaining': 0.0
     }
     reduceResults = lambda results, result: sumResults(results, result, numSimulations)
-    results = functools.reduce(    \
+    results = reduce(    \
         reduceResults,    \
         repeatfunc( \
             run_simulation, \
