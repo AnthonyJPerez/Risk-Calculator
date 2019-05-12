@@ -1,4 +1,4 @@
-const URL = "https://id5qu1pl4a.execute-api.us-east-2.amazonaws.com/Production/simulation";
+const URL = "https://us-central1-risk-simulator-239019.cloudfunctions.net/simulate";
 
 //// 
 // Globals
@@ -30,12 +30,20 @@ function popupMessageHandler (parameters, sender, replyToPopup)
 	// GET using the ID returned by the server.
 	//
 	var requestBody = {
-		initialAttackerArmies: parameters.attacker_armies, 
-		numAttackerDice: parameters.attacker_die_count,
-		attackerDiceType: parameters.attacker_die_type,
-		initialDefenderArmies: parameters.defender_armies,
-		numDefenderDice: parameters.defender_die_count,
-		defenderDiceType: parameters.defender_die_type
+        num_simulations: parseInt(parameters.total_simulation_count),
+        attacker_armies: parseInt(parameters.attacker_armies), 
+        attack_until: 0,
+        defender_armies: parseInt(parameters.defender_armies),
+        defend_until: 0,
+        ruleset: {
+            attackerDice: parseInt(parameters.attacker_die_count),
+            attackerDieSize: [1, parseInt(parameters.attacker_die_type)],
+            minArmiesForAttack: 1,
+            defenderDice: parseInt(parameters.defender_die_count),
+            defenderDieSize: [1, parseInt(parameters.defender_die_type)],
+            minArmiesForDefend: 0,
+            tieBehavior: 0
+        }
 	};
 		
 	_Log("About to request: %s %O", URL, requestBody);
@@ -43,11 +51,12 @@ function popupMessageHandler (parameters, sender, replyToPopup)
 		url: URL,
 		type: "POST",
 		dataType: "json",
-		data: JSON.stringify(requestBody)
+        data: JSON.stringify(requestBody, null, "\t"),
+        contentType: 'application/json;charset=UTF-8'
 	})
 	.done(function(data) {
 		_Log("Received response from server: %O", data);
-		getSimulationResource(data, replyToPopup);
+		replyToPopup(data);
 	})
 	.fail(function() {
 		alert("Ajax failed to fetch data.");
@@ -57,39 +66,6 @@ function popupMessageHandler (parameters, sender, replyToPopup)
 	// and allow its use in an asynchronous fashion.
 	_InstrumentEnd();
 	return true;
-}
-
-
-function getSimulationResource(serverResponse, replyToPopup)
-{
-	_Instrument("getSimulationResource");
-	_Log("serverResponse: %O", serverResponse);
-	
-	var url = URL + "?id=" + serverResponse.id;
-	_Log("About to request: %O", url);
-	$.ajax({
-		url: url,
-	})
-	.done(function(newResponse) {
-		_Log("Received response from server: %O", newResponse);
-		if (null != newResponse.status && newResponse.status === "processing")
-		{
-			// Try the next request in 500ms
-			setTimeout(function() 
-			{
-				getSimulationResource(newResponse, replyToPopup);
-			}, 1000);
-		}
-		else
-		{	
-			replyToPopup(newResponse);
-		}
-	})
-	.fail(function() {
-		alert("Ajax failed to fetch data.");
-	});
-	
-	_InstrumentEnd();
 }
 
 
