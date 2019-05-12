@@ -1,0 +1,24 @@
+body
+{
+	width: 250px;
+}
+
+#simulationForm input 
+{
+	margin-bottom: .5em;
+}
+
+#simulationForm label
+{
+	display: block;
+}
+
+#simulationForm div
+{
+	margin-bottom: 1em;
+}
+
+.error
+{
+	background-color: #e5a0a7;
+}

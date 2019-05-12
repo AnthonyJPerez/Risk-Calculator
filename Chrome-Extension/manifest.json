@@ -1,0 +1,34 @@
+{
+	"name": "Risk Dice Simulator",
+	"version": "0.1",
+	"manifest_version": 2,
+	"description": "Simulates the result of a Risk battle to determine the probability of success",
+	"browser_action":
+	{
+		"default_icon": "images/favicon.png",
+		"default_title": "Dice Simulator for Risk",
+		"default_popup": "pages/popup.html"
+	},
+	"icons": 
+	{
+		"128": "images/icon_128.png",
+		"16": "images/icon_16.png",
+		"48": "images/icon_48.png"
+	},
+	"background":
+	{
+		"scripts": 
+		[
+			"dependencies/jquery-2.1.4.min.js",
+			"lib/logger.js", 
+			"lib/main.js"
+		],
+		"persistent": true
+	},
+	"permissions": 
+	[
+		"https://id5qu1pl4a.execute-api.us-east-2.amazonaws.com/Production/*",
+		"https://hexdeco.de/*",
+		"activeTab"
+	]
+}
