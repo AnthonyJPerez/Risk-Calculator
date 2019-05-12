@@ -3,10 +3,12 @@ import itertools
 import functools
 from enum import Enum
 
+
 class RollResult(Enum):
     Defender = 0
     Attacker = 1
     Tie = 2
+
 
 class DieComparison(Enum):
     Higher = 1
@@ -64,7 +66,7 @@ def run_simulation(attackerArmies: int, attackUntil: int, defenderArmies: int, d
     rollResult = {
         DieComparison.Higher: RollResult.Attacker,
         DieComparison.Lower: RollResult.Defender,
-        DieComparison.Equal: ruleset['tieBehavior']
+        DieComparison.Equal: RollResult(ruleset['tieBehavior'])
     }
 
     # Keep simulating while both the attacker and defenders have armies above the 
