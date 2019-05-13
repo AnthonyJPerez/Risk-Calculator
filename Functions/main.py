@@ -5,7 +5,6 @@ def simulate_http(request):
     from functools import reduce
 
     params = request.get_json(silent=True)
-    #params = json.loads('''{"num_simulations":1000,"attacker_armies":30,"attack_until":0, "defender_armies":30, "defend_until":0,"ruleset":{"attackerDice":3,"attackerDieSize":[1,6],"minArmiesForAttack":1,"defenderDice":2,"defenderDieSize":[1,6],"minArmiesForDefend":0,"tieBehavior":0}}''')
     
     # Run the simulation
     initializer = {
@@ -13,13 +12,19 @@ def simulate_http(request):
         'avgAttackerArmiesRemaining': 0.0,
         'avgDefenderArmiesRemaining': 0.0
     }
+    num_simulations = params['num_simulations']
+    attacker_armies = params['attacker_armies']
+    attack_until = params['attack_until']
+    defender_armies = params['defender_armies']
+    defend_until = params['defend_until']
+    ruleset = params['ruleset']
 
-    reduceResults = lambda results, result: risk.sumResults(results, result, params['num_simulations'])
+    reduceResults = lambda results, result: risk.sumResults(results, result, num_simulations)
     results = reduce(    \
         reduceResults,    \
         risk.repeatfunc( \
             risk.run_simulation, \
-            params['num_simulations'], \
-            params['attacker_armies'], params['attack_until'], params['defender_armies'], params['defend_until'], params['ruleset']), \
+            num_simulations, \
+            attacker_armies, attack_until, defender_armies, defend_until, ruleset), \
         initializer)
     return json.dumps(results)
