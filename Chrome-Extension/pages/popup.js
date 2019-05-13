@@ -33,7 +33,7 @@ function showResponse(response)
 	{
 		var sim = $('#simulationResponse');
 		for (fieldName in response) {
-			$('#'+fieldName, sim).text(response[fieldName]);
+			$('#'+fieldName, sim).text(response[fieldName].toFixed(2));
 			console.log("%O: %O", fieldName, response[fieldName]);
 		}
 
