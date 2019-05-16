@@ -1,4 +1,6 @@
-
+#
+# Google Cloud Functions main entry point
+#
 def simulate_http(request):
     import risk
     from flask import json

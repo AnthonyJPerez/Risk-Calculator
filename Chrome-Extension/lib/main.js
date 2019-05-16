@@ -1,4 +1,5 @@
-const URL = "https://us-central1-risk-simulator-239019.cloudfunctions.net/simulate";
+//const URL = "https://us-central1-risk-simulator-239019.cloudfunctions.net/simulate";
+const URL = "https://risk-simulator-2mkfzqhdjq-uc.a.run.app";
 
 //// 
 // Globals

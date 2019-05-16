@@ -27,7 +27,8 @@
 	},
 	"permissions": 
 	[
-		"https://us-central1-risk-simulator-239019.cloudfunctions.net/*",
+        "https://us-central1-risk-simulator-239019.cloudfunctions.net/*",
+        "https://risk-simulator-2mkfzqhdjq-uc.a.run.app/*",
 		"activeTab"
 	]
 }
