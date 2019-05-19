@@ -120,8 +120,10 @@ def sumResults(results: dict, result: dict, numSimulations: float):
     return results
 
 
-if __name__ == "__main__":
+def main():
     from functools import reduce
+    from itertools import repeat
+    from multiprocessing import Pool
     # Risk Ruleset
     ruleset = {}
     ruleset['attackerDice'] = 3
@@ -133,7 +135,7 @@ if __name__ == "__main__":
     ruleset['tieBehavior'] = RollResult.Defender
 
     # Simulation parameters
-    numSimulations = 10000
+    numSimulations = 100000
     attackerArmies = 30
     attackUntil = 0
     defenderArmies = 30
@@ -146,13 +148,17 @@ if __name__ == "__main__":
         'avgDefenderArmiesRemaining': 0.0
     }
     reduceResults = lambda results, result: sumResults(results, result, numSimulations)
-    results = reduce(    \
-        reduceResults,    \
-        repeatfunc( \
-            run_simulation, \
-            numSimulations, \
-            attackerArmies, attackUntil, defenderArmies, defendUntil, ruleset), \
-        initializer)
+    with Pool() as pool:
+        results = reduce(    \
+            reduceResults,    \
+            pool.starmap(   \
+                run_simulation, \
+                repeat( \
+                    (attackerArmies, attackUntil, defenderArmies, defendUntil, ruleset), \
+                    numSimulations)), \
+            initializer)
 
     print(f"average Wins: {results['avgWinsPercent']}%\naverage Attacker armies remaining: {results['avgAttackerArmiesRemaining']}\naverage Defender armies remaining: {results['avgDefenderArmiesRemaining']}")
-    
+
+if __name__ == "__main__":
+    main()
